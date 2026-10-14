@@ -1,5 +1,6 @@
 using HDF5
 using FFTW
+using CairoMakie
 
 function read_coord(path::String)
   fid = h5open(path, "r")
@@ -35,6 +36,46 @@ function density_to_fluctuation(Density)
 
   return density_fluctuation
   
+end
+
+function PS(fluct)
+  n = length(fluct[:,1,1])
+  delta_k = fft(fluct)
+
+  delta_k = abs.(delta_k)
+
+  PowerSpectrum::Matrix{Float32} = zeros(n,2)
+
+  k_n = []
+
+ for i = 1:n
+   for j = 1:n
+     for l = 1:n
+       k = Int(floor(sqrt(i^2 + j^2 + l^2)))
+       push!(k_n,k)
+     end
+   end
+ end
+
+ dk = floor(maximum(k_n)) / n
+
+ n_box::Vector{Float32} = zeros(n)
+ delta_sum::Vector{Float32} = zeros(n)
+
+ for i = 1:n
+   for j = 1:n
+     for l = 1:n
+       k = Int( floor(sqrt(i^2 + j^2 + l^2) / dk) )
+       n_box[k] += 1
+       delta_sum[k] += delta_k[i,j,l]
+     end
+   end
+ end
+
+ grid = [i*dk for i = 1:n]
+
+ return delta_sum ./ n_box, grid
+
 end
 
 function main()
