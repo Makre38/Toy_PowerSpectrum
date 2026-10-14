@@ -83,11 +83,12 @@ function main(filepath::String)
 
   #filepath = "./sample/snapshot_090.hdf5"
   Coords, BoxSize = read_coord(filepath)
-  density = Coords_to_density(Coords)
+  density = Coords_to_density(Coords,BoxSize;n=128)
   fluct = density_to_fluctuation(density)
-  P,k = PS(pluct)
+  P,k = PS(fluct)
 
-  fig = Figur()
-  axis = Axis(fig[1,1], xlabel = "k [/ckpc]", ylabel="Pk", yscale=log)
+  fig = Figure()
+  axis = Axis(fig[1,1], xlabel = "k [/ckpc]", ylabel="Pk", yscale=log10, xscale=log10)
   lines!(axis, k,P)
+  fig
 end
