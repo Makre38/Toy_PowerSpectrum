@@ -1,4 +1,5 @@
 using HDF5
+using H5Zblosc
 using FFTW
 using CairoMakie
 
@@ -78,5 +79,15 @@ function PS(fluct)
 
 end
 
-function main()
+function main(filepath::String)
+
+  #filepath = "./sample/snapshot_090.hdf5"
+  Coords, BoxSize = read_coord(filepath)
+  density = Coords_to_density(Coords)
+  fluct = density_to_fluctuation(density)
+  P,k = PS(pluct)
+
+  fig = Figur()
+  axis = Axis(fig[1,1], xlabel = "k [/ckpc]", ylabel="Pk", yscale=log)
+  lines!(axis, k,P)
 end
