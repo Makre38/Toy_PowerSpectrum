@@ -14,6 +14,7 @@ function read_coord(path::String)
 end
 
 function Coords_to_density(Coords::Vector{Vector{Float32}}, BoxSize::Float32; n::Int = 64)
+  #number per ckpc
   dx = BoxSize / n
 
   density::Array{Float32,3} = zeros(n,n,n) 
@@ -27,6 +28,14 @@ function Coords_to_density(Coords::Vector{Vector{Float32}}, BoxSize::Float32; n:
 
 end
 
+function density_to_fluctuation(Density)
+  n = length(Density[:,1,1])
+  mean_density::Float32 = Float32(sum(Density)) / n^3
+  density_fluctuation::Array{Float32,3} = - Density ./ mean_density .+ 1
+
+  return density_fluctuation
+  
+end
 
 function main()
 end
