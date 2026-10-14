@@ -45,7 +45,7 @@ function PS(fluct)
 
   delta_k = abs.(delta_k)
 
-  PowerSpectrum::Matrix{Float32} = zeros(n,2)
+  #PowerSpectrum::Matrix{Float32} = zeros(n,2)
 
   k_n = []
 
@@ -60,30 +60,33 @@ function PS(fluct)
 
  dk = floor(maximum(k_n)) / n
 
- n_box::Vector{Float32} = zeros(n)
+ n_data::Vector{Float32} = zeros(n)
  delta_sum::Vector{Float32} = zeros(n)
 
  for i = 1:n
    for j = 1:n
      for l = 1:n
        k = Int( floor(sqrt(i^2 + j^2 + l^2) / dk) )
-       n_box[k] += 1
+       n_data[k] += 1
        delta_sum[k] += delta_k[i,j,l]
      end
    end
  end
 
+ @info maximum(n_data)
+ @info minimum(n_data)
+
  grid = [i*dk for i = 1:n]
 
- return delta_sum ./ n_box, grid
+ return delta_sum ./ n_data, grid
 
 end
 
-function main(filepath::String)
+function main(filepath::String; N=64)
 
   #filepath = "./sample/snapshot_090.hdf5"
   Coords, BoxSize = read_coord(filepath)
-  density = Coords_to_density(Coords,BoxSize;n=128)
+  density = Coords_to_density(Coords,BoxSize;n=N)
   fluct = density_to_fluctuation(density)
   P,k = PS(fluct)
 
