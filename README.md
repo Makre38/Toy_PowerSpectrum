@@ -15,3 +15,7 @@ A DM only datas at z=0.00 from IllustrisTNG project . [link](https://users.flati
 
 ## ./src
 julia code.
+
+# state
+おおむねそれっぽいPower Spectumが出力されるけど、小スケールであわない。
+ショットノイズとかちゃんと扱ってない、など改善の余地は山ほどある。
